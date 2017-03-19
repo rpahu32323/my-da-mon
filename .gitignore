@@ -1,0 +1,29 @@
+# eclipse project files
+.autotools
+.cproject
+.dirstamp
+.project
+.settings
+
+# autotools stuff
+aclocal.m4
+autom4te.cache
+autoscan-2.69.log
+compile
+config.log
+config.status
+configure
+depcomp
+install-sh
+Makefile
+Makefile.in
+missing
+
+# compiled files
+*.o
+*.Po
+
+# unneeded directories
+bin
+
+
