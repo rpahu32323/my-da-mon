@@ -9,6 +9,7 @@
 // application includes
 #include "MyDAMon.h"
 
+// c++ library includes
 #include <iostream>
 
 // my-da-mon starting point
@@ -19,10 +20,11 @@ int main( int argc, char **argv )
 	try
 	{
 		// create an instance of the application
-		// e	and xecute it (maybe)
+		// 		and execute it (maybe)
 		//		and return the result
 		auto 	Application	=	MyDAMon::Create( argc, argv );
 		int	RetVal = Application ? Application->Run() : -1;
+		//int RetVal = Application->Run();
 		return( RetVal );
 	}
 	// catch unhandled exceptions

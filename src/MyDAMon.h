@@ -10,20 +10,20 @@
 #ifndef SRC_MYDAMON_H_
 #define SRC_MYDAMON_H_
 
+// application includes
+#include <src/rpahu/utils/Base.h>
+
 // c++ library includes
 #include <memory>
 
 // class definition
-class MyDAMon
+class MyDAMon : public rpahu::utils::Base
 {
 	// constructors and destructors
 	public:
 
 		// main constructors
 		MyDAMon( int argc, char **argv );
-
-		// main destructor
-		virtual ~MyDAMon()	=	default;
 
 	// public methods
 	public:

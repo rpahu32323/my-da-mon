@@ -51,7 +51,7 @@ int MyDAMon::Run()
 		// can get here from a null pointer
 		//		check and throw an exception
 		if ( this == nullptr )
-			throw( std::runtime_error( "Null pointer used" ) );
+			ThrowException( "Executing application with nullptr" );
 
 		// output something
 		std::cout<<"Hello World"<<std::endl;
@@ -59,8 +59,8 @@ int MyDAMon::Run()
 	// catch standard exceptions
 	catch( std::exception & Exception )
 	{
-		// update the user
-		std::cerr<<Exception.what()<<std::endl;
+		// nothing to do
+		//		messages sent in ThrowException
 	}
 
 	// return unsuccessful
