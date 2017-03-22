@@ -21,8 +21,7 @@ MyDAMon::MyDAMon( int argc, char **argv )
 	:	Gtk::Application( argc, argv ),
 		rpahu::utils::Base(),
 		ConfigFileName( "" ),
-		CSSFileName( "" ),
-		Button( "HELLO" )
+		CSSFileName( "" )
 {
 	// add command line options
 	//		log level
@@ -63,7 +62,8 @@ void MyDAMon::on_activate()
 	// do some temporary window stuff
 	MainWindow.set_wmclass( "res_class", "DockApp" );
 	MainWindow.set_size_request( 64, -1 );
-	MainWindow.add( Button );
+	Gtk::Button	*Button = Gtk::manage( new Gtk::Button( "HELLO" ));
+	MainWindow.add( *Button );
 	MainWindow.show_all_children( true );
 
 	// return finished

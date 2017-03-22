@@ -32,8 +32,6 @@ class MyDAMon : public Gtk::Application, public rpahu::utils::Base
 
 		// application main window
 		Gtk::ApplicationWindow		MainWindow;
-		//		temporary stuff
-		Gtk::Button					Button;
 
 	// constructors and destructors
 	public:
