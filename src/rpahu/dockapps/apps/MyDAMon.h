@@ -13,12 +13,28 @@
 // application includes
 #include <src/rpahu/utils/Base.h>
 
-// c++ library includes
-#include <memory>
+// gtkmm include
+#include <gtkmm.h>
+
+// put into the rpahu::dockapps namespace
+namespace rpahu {
+namespace dockapps {
 
 // class definition
-class MyDAMon : public rpahu::utils::Base
+class MyDAMon : public Gtk::Application, public rpahu::utils::Base
 {
+	// data members
+	private:
+
+		// config and css file names
+		std::string		ConfigFileName;
+		std::string		CSSFileName;
+
+		// application main window
+		Gtk::ApplicationWindow		MainWindow;
+		//		temporary stuff
+		Gtk::Button					Button;
+
 	// constructors and destructors
 	public:
 
@@ -33,6 +49,15 @@ class MyDAMon : public rpahu::utils::Base
 
 		// run the application
 		int	Run();
+
+
+	// overrides on gtk::application
+	private:
+		// activate event
+		void	on_activate();
 };
+
+} /* namespace dockapps */
+} /* namespace rpahu */
 
 #endif /* SRC_MYDAMON_H_ */

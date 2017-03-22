@@ -14,6 +14,12 @@ AC_PROG_CXX
 AC_PROG_CC
 AX_CXX_COMPILE_STDCXX_14
 
+# check for libary functions
+AC_CHECK_FUNCS( [localtime_r strerror] )
+
+# check for gtkmm
+PKG_CHECK_MODULES( [GTKMM], [gtkmm-3.0 >= 3.8.0] )
+
 # make the make file
 AC_CONFIG_FILES( [Makefile] )
 

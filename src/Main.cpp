@@ -7,7 +7,7 @@
 //
 
 // application includes
-#include "MyDAMon.h"
+#include "rpahu/dockapps/apps/MyDAMon.h"
 
 // c++ library includes
 #include <iostream>
@@ -22,9 +22,8 @@ int main( int argc, char **argv )
 		// create an instance of the application
 		// 		and execute it (maybe)
 		//		and return the result
-		auto 	Application	=	MyDAMon::Create( argc, argv );
-		int	RetVal = Application ? Application->Run() : -1;
-		//int RetVal = Application->Run();
+		auto 	Application	=	rpahu::dockapps::MyDAMon::Create( argc, argv );
+		int		RetVal 		= 	Application ? Application->Run() : -1;
 		return( RetVal );
 	}
 	// catch unhandled exceptions
