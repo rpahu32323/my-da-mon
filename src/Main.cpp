@@ -23,7 +23,8 @@ int main( int argc, char **argv )
 		// 		and execute it (maybe)
 		//		and return the result
 		auto 	Application	=	rpahu::dockapps::MyDAMon::Create( argc, argv );
-		int		RetVal 		= 	Application ? Application->Run() : -1;
+		//int		RetVal 		= 	Application ? Application->Run() : 1;
+		int		RetVal		=	Application->Run();
 		return( RetVal );
 	}
 	// catch unhandled exceptions
@@ -35,7 +36,7 @@ int main( int argc, char **argv )
 
 	// return unsuccessful
 	//		can only get here with an exception
-	return( -1 );
+	return( 1 );
 }
 
 

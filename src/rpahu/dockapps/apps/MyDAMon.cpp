@@ -9,9 +9,6 @@
 // application includes
 #include "MyDAMon.h"
 
-// c++ library includes
-#include <iostream>
-
 // put into the rpahu::dockapps namespace
 namespace rpahu {
 namespace dockapps {
@@ -47,8 +44,8 @@ std::unique_ptr<MyDAMon> MyDAMon::Create( int argc, char **argv )
 	// catch standard exceptions
 	catch( std::exception & Exception )
 	{
-		// update the user
-		std::cerr<<Exception.what()<<std::endl;
+		// log the exception
+		LogError( Exception.what() );
 	}
 
 	// return nothing
@@ -79,24 +76,28 @@ int MyDAMon::Run()
 		// can get here from a null pointer
 		//		check and throw an exception
 		if ( this == nullptr )
-			ThrowException( "Executing application with nullptr" );
+			throw( std::runtime_error( "Executing application with nullptr" ));
 
 		// run the application
 		int RetVal	=	this->run( MainWindow );
 
-		// return the return value
-		return( RetVal );
+		// check for a bad return
+		if ( RetVal != 0 )
+			throw( std::runtime_error( "Bad return value from application (" + std::to_string( RetVal ) + ")" ));
+
+		// return success
+		return( 0 );
 	}
 	// catch standard exceptions
 	catch( std::exception & Exception )
 	{
-		// nothing to do
-		//		messages sent in ThrowException
+		// log the exception
+		LogError( Exception.what(), errno );
 	}
 
 	// return unsuccessful
 	//		can only get here with an exception
-	return( -1 );
+	return( 1 );
 }
 
 } /* namespace dockapps */

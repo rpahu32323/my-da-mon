@@ -75,40 +75,23 @@ void Base::LogError( std::string Message, int ErrorNumber )
     // build the error message
     std::string ErrorMessage    =   "ERROR: " + Message;
 
-    // output the message to cerror
-    std::cerr<<ErrorMessage<<std::endl<<std::flush;
+    // log the error
+	LogMessage( Message, 0 );
 
-    // add to the log
-    LogMessage( ErrorMessage, 0 );
+    // output the message to cerr
+    std::cerr<<Message<<std::endl<<std::flush;
 
     // check for an error number
     if ( ErrorNumber != 0 )
     {
-        // build a message with the number
-        ErrorMessage    =   "   Number: " + std::to_string( ErrorNumber ) + " - " + strerror( ErrorNumber );
+        // add the error number line
+        ErrorMessage    +=   "   Number: " + std::to_string( ErrorNumber ) + " - " + strerror( ErrorNumber );
 
-        // output the message to cerror
-        std::cerr<<"ERROR: "<<ErrorMessage<<std::endl<<std::flush;
-
-        // log the error
-        LogMessage( ErrorMessage, 0 );
+        // output the message to cerr
+        std::cerr<<Message<<std::endl<<std::flush;
     }
 
     // return finished
-    return;
-}
-
-// throw an exception
-void Base::ThrowException( std::string Message, int ErrorNumber )
-{
-    // log the error
-    LogError( Message, ErrorNumber );
-
-    // throw an exception
-    throw( std::runtime_error( Message ) );
-
-    // return finished
-    //      note - will never get here
     return;
 }
 
