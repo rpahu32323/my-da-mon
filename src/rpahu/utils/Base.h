@@ -20,17 +20,23 @@ namespace utils {
 // class definition
 class Base
 {
+	// enumerations
+	public:
+
+		// log level enumerations
+		enum class LogLevel { IMPORTANT, NORMAL, DEBUG };
+
 	// data members
 	private:
 
 		// log verbosity
-		static	int	LogLevel;
+		static	LogLevel	CurrLogLevel;
 
 	// public methods
 	public:
 
 		// set the log verbose level
-        void    SetLogLevel( int NewLevel );
+        void    SetLogLevel( LogLevel NewLevel )		{ CurrLogLevel = NewLevel; return; };
 
 	// protected methods
 	protected:
@@ -39,7 +45,7 @@ class Base
         static void LogError( std::string Message, int ErrorNumber = 0 );
 
         // log a regular message
-        static void LogMessage( std::string Message, int LogLevel = 99 );
+        static void LogMessage( std::string Message, LogLevel Level = LogLevel::DEBUG );
 
 	// private methods
 	private:

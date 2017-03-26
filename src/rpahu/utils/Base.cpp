@@ -21,25 +21,7 @@ namespace rpahu {
 namespace utils {
 
 // default log level
-int		Base::LogLevel	=	0;
-
-// set the log level
-void Base::SetLogLevel( int NewLevel )
-{
-    // save the new level
-    LogLevel = NewLevel;
-
-    // build a message
-    std::stringstream   Message;
-    Message<<"Setting log level to: "<<NewLevel;
-
-    // and log it
-    LogMessage( Message.str(), 0 );
-
-    // return finished
-    return;
-};
-
+Base::LogLevel	Base::CurrLogLevel	=	Base::LogLevel::IMPORTANT;
 
 // get the time
 std::string Base::GetTimestamp()
@@ -58,10 +40,10 @@ std::string Base::GetTimestamp()
 }
 
 // log a message
-void Base::LogMessage( std::string Message, int Level )
+void Base::LogMessage( std::string Message, LogLevel Level )
 {
     // check the level
-    if ( Level <= LogLevel )
+    if ( Level <= CurrLogLevel )
         // output the message
         std::cout<<GetTimestamp()<<" "<<Message<<std::endl<<std::flush;
 
@@ -76,7 +58,7 @@ void Base::LogError( std::string Message, int ErrorNumber )
     std::string ErrorMessage    =   "ERROR: " + Message;
 
     // log the error
-	LogMessage( Message, 0 );
+	LogMessage( ErrorMessage, LogLevel::IMPORTANT );
 
     // output the message to cerr
     std::cerr<<Message<<std::endl<<std::flush;
@@ -85,10 +67,13 @@ void Base::LogError( std::string Message, int ErrorNumber )
     if ( ErrorNumber != 0 )
     {
         // add the error number line
-        ErrorMessage    +=   "   Number: " + std::to_string( ErrorNumber ) + " - " + strerror( ErrorNumber );
+        ErrorMessage	=	"   Number: " + std::to_string( ErrorNumber ) + " - " + strerror( ErrorNumber );
+
+        // log the second message
+    	LogMessage( ErrorMessage, LogLevel::IMPORTANT );
 
         // output the message to cerr
-        std::cerr<<Message<<std::endl<<std::flush;
+        std::cerr<<ErrorMessage<<std::endl<<std::flush;
     }
 
     // return finished

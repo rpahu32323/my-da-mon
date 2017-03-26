@@ -30,6 +30,9 @@ class MyDAMon : public Gtk::Application, public rpahu::utils::Base
 		std::string		ConfigFileName;
 		std::string		CSSFileName;
 
+		// configureation
+		std::list<std::string>		Config;
+
 		// application main window
 		Gtk::ApplicationWindow		MainWindow;
 
@@ -48,6 +51,14 @@ class MyDAMon : public Gtk::Application, public rpahu::utils::Base
 		// run the application
 		int	Run();
 
+	// private methods
+	private:
+
+		// handle the local options
+		int GetLocalOptions( const Glib::RefPtr<Glib::VariantDict>& Options );
+
+		// load the config
+		void LoadConfig( std::string FileName );
 
 	// overrides on gtk::application
 	private:
