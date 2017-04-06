@@ -12,6 +12,9 @@
 
 // c++ library
 #include <string>
+#include <list>
+#include <mutex>
+#include <atomic>
 
 // put into the rpahu::utils namespace
 namespace rpahu {
@@ -24,13 +27,16 @@ class Base
 	public:
 
 		// log level enumerations
-		enum class LogLevel { IMPORTANT, NORMAL, DEBUG };
+		enum class LogLevel { SILENT, IMPORTANT, NORMAL, DEBUG };
 
 	// data members
 	private:
 
 		// log verbosity
-		static	LogLevel	CurrLogLevel;
+		static	std::atomic<Base::LogLevel>		CurrLogLevel;
+
+		// log mutex
+		static	std::mutex	LogMutex;
 
 	// public methods
 	public:
@@ -41,11 +47,14 @@ class Base
 	// protected methods
 	protected:
 
+        // write messages
+        static void WriteMessages( std::ostream &Stream, std::list<std::string> Messsages, std::string Timestamp = "" );
+
         // log an error message
-        static void LogError( std::string Message, int ErrorNumber = 0 );
+        static void LogErrors( std::list<std::string> Messages, int ErrorNumber = 0 );
 
         // log a regular message
-        static void LogMessage( std::string Message, LogLevel Level = LogLevel::DEBUG );
+        static void LogMessages( std::list<std::string> Messages, LogLevel Level = LogLevel::NORMAL );
 
 	// private methods
 	private:

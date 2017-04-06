@@ -21,7 +21,8 @@ namespace rpahu {
 namespace utils {
 
 // default log level
-Base::LogLevel	Base::CurrLogLevel	=	Base::LogLevel::IMPORTANT;
+std::atomic<Base::LogLevel>	Base::CurrLogLevel	=	{ Base::LogLevel::IMPORTANT };
+std::mutex		Base::LogMutex;
 
 // get the time
 std::string Base::GetTimestamp()
@@ -39,42 +40,56 @@ std::string Base::GetTimestamp()
     return( Timestamp.str() );
 }
 
-// log a message
-void Base::LogMessage( std::string Message, LogLevel Level )
+// write messages to a stream
+void Base::WriteMessages( std::ostream &Stream, std::list<std::string> Messages, std::string Timestamp )
 {
-    // check the level
+	// write the messages
+	for( auto Message : Messages )
+	{
+		// add timestamp if there is one
+		if ( !Timestamp.empty() )
+			Stream<<Timestamp<<" ";
+		Stream<<Message<<std::endl<<std::flush;
+	}
+
+	// return finished
+	return;
+}
+
+// log a message
+void Base::LogMessages( std::list<std::string> Messages, LogLevel Level )
+{
+	// use a mutex for better output
+	//		with threads
+	std::lock_guard<std::mutex>		Lock( LogMutex );
+
+    // write the messages based on
+	//		the logging level
     if ( Level <= CurrLogLevel )
-        // output the message
-        std::cout<<GetTimestamp()<<" "<<Message<<std::endl<<std::flush;
+    	WriteMessages( std::cout, Messages, GetTimestamp() );
 
     // return finished
     return;
 }
 
 // log an error
-void Base::LogError( std::string Message, int ErrorNumber )
+void Base::LogErrors( std::list<std::string> Messages, int ErrorNumber )
 {
-    // build the error message
-    std::string ErrorMessage    =   "ERROR: " + Message;
-
-    // log the error
-	LogMessage( ErrorMessage, LogLevel::IMPORTANT );
-
-    // output the message to cerr
-    std::cerr<<Message<<std::endl<<std::flush;
+	// use a mutex for better output
+	//		with threads
+	std::lock_guard<std::mutex>		Lock( LogMutex );
 
     // check for an error number
+	//		and add the message
     if ( ErrorNumber != 0 )
-    {
-        // add the error number line
-        ErrorMessage	=	"   Number: " + std::to_string( ErrorNumber ) + " - " + strerror( ErrorNumber );
+        Messages.push_back( "   Error Number: " + std::to_string( ErrorNumber ) + " - " + strerror( ErrorNumber ) );
 
-        // log the second message
-    	LogMessage( ErrorMessage, LogLevel::IMPORTANT );
+    // write to cerr
+    WriteMessages( std::cerr, Messages );
 
-        // output the message to cerr
-        std::cerr<<ErrorMessage<<std::endl<<std::flush;
-    }
+    // and then to the cout
+    if ( LogLevel::IMPORTANT <= CurrLogLevel )
+    	WriteMessages( std::cout, Messages, GetTimestamp() );
 
     // return finished
     return;

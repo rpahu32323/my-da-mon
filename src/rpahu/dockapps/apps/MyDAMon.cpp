@@ -63,7 +63,7 @@ std::unique_ptr<MyDAMon> MyDAMon::Create( int argc, char **argv )
 	catch( std::exception & Exception )
 	{
 		// log the exception
-		LogError( Exception.what() );
+		LogErrors( { Exception.what() } );
 	}
 
 	// return nothing
@@ -94,7 +94,7 @@ int MyDAMon::GetLocalOptions( const Glib::RefPtr<Glib::VariantDict>& Options )
 		SetLogLevel( Level );
 
 		// log a message
-		LogMessage( "Log level set to " + LevelOption.raw() );
+		LogMessages( { "Log level set to " + LevelOption.raw() } );
 	}
 
 	// maybe get a config file from a
@@ -103,7 +103,7 @@ int MyDAMon::GetLocalOptions( const Glib::RefPtr<Glib::VariantDict>& Options )
 	if ( Options->lookup_value( "config", ConfigOption ) )
 	{
 		// log a message
-		LogMessage( "Using config file: '" + ConfigOption.raw() + "'" );
+		LogMessages( { "Using config file: '" + ConfigOption.raw() + "'" } );
 	}
 
 	// load the config file
@@ -118,7 +118,7 @@ int MyDAMon::GetLocalOptions( const Glib::RefPtr<Glib::VariantDict>& Options )
 	if ( Options->lookup_value( "css", CSSOption ) )
 	{
 		// log a message
-		LogMessage( "Using css file:  '" + CSSOption.raw() + "'" );
+		LogMessages( { "Using css file:  '" + CSSOption.raw() + "'" } );
 	}
 
 	// return -1 to continue normal processing
@@ -199,20 +199,19 @@ void MyDAMon::LoadConfig( std::string FileName )
 		else
 		{
 			// log a message
-			LogError( "Cannot open config file: '" + FileName + "'", errno );
+			LogErrors( { "Cannot open config file: '" + FileName + "'" }, errno );
 		}
 	}
 
 	// log a message if the default config is used
 	if ( InternalConfig )
-		LogMessage( "Using default config" );
+		LogMessages( { "Using default config" } );
 
 	// log the config
-	LogMessage( "Using this config:", LogLevel::DEBUG );
-	LogMessage( "", LogLevel::DEBUG );
-	for( auto Line : Config )
-		LogMessage( Line, LogLevel::DEBUG );
-	LogMessage( "", LogLevel::DEBUG );
+	std::list<std::string>	Messages	=	{ "Using this config: ", "" };
+	Messages.insert( Messages.end(), Config.begin(), Config.end() );
+	Messages.push_back( "" );
+	LogMessages( Messages, LogLevel::DEBUG );
 
 	// return finished
 	return;
@@ -256,7 +255,7 @@ int MyDAMon::Run()
 	catch( std::exception & Exception )
 	{
 		// log the exception
-		LogError( Exception.what(), errno );
+		LogErrors( { Exception.what() }, errno );
 	}
 
 	// return unsuccessful
