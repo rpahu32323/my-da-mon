@@ -83,7 +83,9 @@ int MyDAMon::GetLocalOptions( const Glib::RefPtr<Glib::VariantDict>& Options )
 	{
 		// set the log level
 		LogLevel	Level	=	LogLevel::NORMAL;
-		if ( "1" == LevelOption )
+		if ( "0" == LevelOption )
+			Level	=	LogLevel::SILENT;
+		else if ( "1" == LevelOption )
 			Level	=	LogLevel::IMPORTANT;
 		else if ( "2" == LevelOption )
 			Level	=	LogLevel::NORMAL;
@@ -92,7 +94,7 @@ int MyDAMon::GetLocalOptions( const Glib::RefPtr<Glib::VariantDict>& Options )
 		SetLogLevel( Level );
 
 		// log a message
-		LogMessage( "Log level set to " + LevelOption.raw(), LogLevel::NORMAL );
+		LogMessage( "Log level set to " + LevelOption.raw() );
 	}
 
 	// maybe get a config file from a
@@ -101,7 +103,7 @@ int MyDAMon::GetLocalOptions( const Glib::RefPtr<Glib::VariantDict>& Options )
 	if ( Options->lookup_value( "config", ConfigOption ) )
 	{
 		// log a message
-		LogMessage( "Using config file: '" + ConfigOption.raw() + "'", LogLevel::NORMAL );
+		LogMessage( "Using config file: '" + ConfigOption.raw() + "'" );
 	}
 
 	// load the config file
@@ -116,7 +118,7 @@ int MyDAMon::GetLocalOptions( const Glib::RefPtr<Glib::VariantDict>& Options )
 	if ( Options->lookup_value( "css", CSSOption ) )
 	{
 		// log a message
-		LogMessage( "Using css file:  '" + CSSOption.raw() + "'", LogLevel::NORMAL );
+		LogMessage( "Using css file:  '" + CSSOption.raw() + "'" );
 	}
 
 	// return -1 to continue normal processing
@@ -203,14 +205,14 @@ void MyDAMon::LoadConfig( std::string FileName )
 
 	// log a message if the default config is used
 	if ( InternalConfig )
-		LogMessage( "Using default config", LogLevel::NORMAL );
+		LogMessage( "Using default config" );
 
 	// log the config
-	LogMessage( "Using this config:" );
-	LogMessage( "" );
+	LogMessage( "Using this config:", LogLevel::DEBUG );
+	LogMessage( "", LogLevel::DEBUG );
 	for( auto Line : Config )
-		LogMessage( Line );
-	LogMessage( "" );
+		LogMessage( Line, LogLevel::DEBUG );
+	LogMessage( "", LogLevel::DEBUG );
 
 	// return finished
 	return;

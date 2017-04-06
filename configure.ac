@@ -11,7 +11,6 @@ AC_CONFIG_MACRO_DIRS([macros])
 
 # check for c++ compiler
 AC_PROG_CXX
-AC_PROG_CC
 AX_CXX_COMPILE_STDCXX_14
 
 # check for libary functions
