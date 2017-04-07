@@ -23,15 +23,14 @@ int main( int argc, char **argv )
 		// 		and execute it (maybe)
 		//		and return the result
 		auto 	Application	=	rpahu::dockapps::MyDAMon::Create( argc, argv );
-		//int		RetVal 		= 	Application ? Application->Run() : 1;
-		int		RetVal		=	Application->Run();
+		int		RetVal 		= 	Application ? Application->Run() : 1;
 		return( RetVal );
 	}
 	// catch unhandled exceptions
 	catch( ... )
 	{
 		// update the user
-		std::cerr<<"Unhandled exception caught"<<std::endl;
+		std::cerr<<"Unhandled exception caught"<<std::endl<<std::flush;
 	}
 
 	// return unsuccessful

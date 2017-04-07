@@ -58,7 +58,7 @@ class MyDAMon : public Gtk::Application, public rpahu::utils::Base
 		int GetLocalOptions( const Glib::RefPtr<Glib::VariantDict>& Options );
 
 		// load the config
-		void LoadConfig( std::string FileName );
+		void LoadConfig( const std::string& FileName );
 
 	// overrides on gtk::application
 	private:

@@ -41,7 +41,7 @@ std::string Base::GetTimestamp()
 }
 
 // write messages to a stream
-void Base::WriteMessages( std::ostream &Stream, std::list<std::string> Messages, std::string Timestamp )
+void Base::WriteMessages( std::ostream &Stream, const std::list<std::string>& Messages, const std::string& Timestamp )
 {
 	// write the messages
 	for( auto Message : Messages )
@@ -49,15 +49,16 @@ void Base::WriteMessages( std::ostream &Stream, std::list<std::string> Messages,
 		// add timestamp if there is one
 		if ( !Timestamp.empty() )
 			Stream<<Timestamp<<" ";
-		Stream<<Message<<std::endl<<std::flush;
+		Stream<<Message<<std::endl;
 	}
+	Stream<<std::flush;
 
 	// return finished
 	return;
 }
 
 // log a message
-void Base::LogMessages( std::list<std::string> Messages, LogLevel Level )
+void Base::LogMessages( const std::list<std::string>& Messages, const LogLevel Level )
 {
 	// use a mutex for better output
 	//		with threads
@@ -73,7 +74,7 @@ void Base::LogMessages( std::list<std::string> Messages, LogLevel Level )
 }
 
 // log an error
-void Base::LogErrors( std::list<std::string> Messages, int ErrorNumber )
+void Base::LogErrors( std::list<std::string> Messages, const int ErrorNumber )
 {
 	// use a mutex for better output
 	//		with threads

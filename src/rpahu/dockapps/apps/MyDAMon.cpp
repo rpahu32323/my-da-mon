@@ -126,7 +126,7 @@ int MyDAMon::GetLocalOptions( const Glib::RefPtr<Glib::VariantDict>& Options )
 }
 
 // get the config
-void MyDAMon::LoadConfig( std::string FileName )
+void MyDAMon::LoadConfig( const std::string& FileName )
 {
 	// what config is used
 	bool	InternalConfig	=	true;
@@ -205,7 +205,7 @@ void MyDAMon::LoadConfig( std::string FileName )
 
 	// log a message if the default config is used
 	if ( InternalConfig )
-		LogMessages( { "Using default config" } );
+		LogMessages( { "Using internal config" } );
 
 	// log the config
 	std::list<std::string>	Messages	=	{ "Using this config: ", "" };
