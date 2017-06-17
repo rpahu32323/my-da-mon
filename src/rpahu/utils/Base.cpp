@@ -85,6 +85,10 @@ void Base::LogErrors( std::list<std::string> Messages, const int ErrorNumber )
     if ( ErrorNumber != 0 )
         Messages.push_back( "   Error Number: " + std::to_string( ErrorNumber ) + " - " + strerror( ErrorNumber ) );
 
+    // add error identifiers
+    for( auto &Message : Messages )
+    	Message	=	"ERROR: " + Message;
+
     // write to cerr
     WriteMessages( std::cerr, Messages );
 

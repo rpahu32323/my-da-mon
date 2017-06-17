@@ -7,11 +7,11 @@
 //
 
 // only include the header once
-#ifndef SRC_MYDAMON_H_
-#define SRC_MYDAMON_H_
+#ifndef SRC_RPAHU_DOCKAPPS_APPS_MYDAMON_H_
+#define SRC_RPAHU_DOCKAPPS_APPS_MYDAMON_H_
 
 // application includes
-#include <src/rpahu/utils/Base.h>
+#include "../../utils/Base.h"
 
 // gtkmm include
 #include <gtkmm.h>

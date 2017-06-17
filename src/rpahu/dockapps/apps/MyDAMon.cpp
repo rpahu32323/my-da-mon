@@ -8,6 +8,7 @@
 
 // application includes
 #include "MyDAMon.h"
+#include "../monitors/Monitor.h"
 
 // c++ library includes
 #include <fstream>
@@ -22,14 +23,14 @@ MyDAMon::MyDAMon( int argc, char **argv )
 		rpahu::utils::Base(),
 		ConfigFileName( "" ),
 		CSSFileName( "" ),
-		Config( { "Group=Time",
+		Config( { "Group=Time Time",
 				  "TimeMon=Time",
-				  "Group=Date",
+				  "Group=Date Date",
 				  "DateMon=Date" } )
 {
 	// add command line options
 	//		log level
-	this->add_main_option_entry( Gio::Application::OPTION_TYPE_STRING, "loglevel", '\0', "Log Verbosity Level (1, 2, or 3)", "LEVEL", 0 );
+	this->add_main_option_entry( Gio::Application::OPTION_TYPE_STRING, "loglevel", '\0', "Log Verbosity Level (0, 1, 2, or 3)", "LEVEL", 0 );
 	// 		config file
 	this->add_main_option_entry( Gio::Application::OPTION_TYPE_STRING, "config", '\0', "Configuration File", "FILE", 0 );
 	//		css file
@@ -184,7 +185,7 @@ void MyDAMon::LoadConfig( const std::string& FileName )
 					break;
 				}
 
-				// add to vector if not empty
+				// add to list if not empty
 				//		and not a comment
 				if (( !Line.empty() ) && ( *Line.begin() != '#' ))
 					Config.push_back( Line );
@@ -220,10 +221,68 @@ void MyDAMon::LoadConfig( const std::string& FileName )
 // handle the on activate
 void MyDAMon::on_activate()
 {
-	// do some temporary window stuff
-	Gtk::Button	*Button = Gtk::manage( new Gtk::Button( "BYE" ));
-	Button->set_name( "my-button" );
-	MainWindow.add( *Button );
+	// create a vbox to hold all the monitors
+	auto	Box			=	Gtk::manage( new Gtk::VBox );
+
+	// init the current group to nothing
+	auto	CurrGroup	=	rpahu::dockapps::Monitor::Create( "", "" );
+
+	// run through the config
+	for( auto CurrLine : Config )
+	{
+		// parse the line
+		std::string		Type		=	CurrLine.substr( 0, CurrLine.find( "=" ));
+		std::string		InitString	=	"";
+		if ( Type != CurrLine )
+			InitString	=	CurrLine.substr( CurrLine.find( "=" ) + 1, std::string::npos );
+
+		// check for a new group
+		if ( "Group" == Type )
+		{
+			// create a new group
+			//		let the parent manage memory (gtk::manage)
+			CurrGroup	=	Gtk::manage( rpahu::dockapps::Monitor::Create( Type, InitString ));
+
+			// add it to the window
+			Box->add( *CurrGroup );
+
+			// continue with the next line
+			continue;
+		}
+
+		// if there is no current group, monitors can't
+		//		be added. skip monitors not in a group
+		if ( nullptr == CurrGroup )
+		{
+			// log an error
+			//		not fatal so skip the line
+			//		and keep processing
+			LogErrors( { "Monitor (" + Type + ") is not within a group" } );
+			continue;
+		}
+
+		// create a new monitor
+		//		let the parent manage memory (gtk::manage)
+		auto	CurrMonitor	=	rpahu::dockapps::Monitor::Create( Type, InitString );
+
+		// see if it is a valid monitor
+		if ( nullptr == CurrMonitor )
+		{
+			// log an error message
+			//		not fatal so skip the line
+			//		and keep processing
+			LogErrors( { "Type (" + Type + ") is an invalid monitor" } );
+			continue;
+		}
+		else
+		{
+			// add it to the group
+			CurrGroup->add( *CurrMonitor );
+		}
+	}
+
+	// update the window
+	MainWindow.add( *Box );
 	MainWindow.show_all_children( true );
 
 	// return finished
