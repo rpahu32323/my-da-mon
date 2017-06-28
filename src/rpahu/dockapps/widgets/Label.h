@@ -29,7 +29,6 @@ class Label : public Widget
 		std::string     CenterMarkup;
 		std::string     RightMarkup;
 
-
 	// constructors and destructors
 	public:
 

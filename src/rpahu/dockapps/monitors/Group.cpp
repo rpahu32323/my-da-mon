@@ -17,7 +17,7 @@ namespace dockapps {
 Group::Group( const std::string& Name, const std::string& Parameters )
 	:	Monitor( "Group", Name )
 {
-	// get the headding
+	// get the heading
 	std::stringstream	Work( Parameters );
 	std::string			Text( "" );
 	Work>>Text;
@@ -31,7 +31,6 @@ Group::Group( const std::string& Name, const std::string& Parameters )
 
 		// add the text
 		Heading->SetCenterMarkup( Text );
-		Heading->Update();
 
 		// add the label to the group
 		this->add( *Heading );

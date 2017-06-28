@@ -8,10 +8,10 @@
 
 // application includes
 #include "MyDAMon.h"
-#include "../monitors/Monitor.h"
 
 // c++ library includes
 #include <fstream>
+#include <iostream>
 
 // put into the rpahu::dockapps namespace
 namespace rpahu {
@@ -23,10 +23,10 @@ MyDAMon::MyDAMon( int argc, char **argv )
 		rpahu::utils::Base(),
 		ConfigFileName( "" ),
 		CSSFileName( "" ),
-		Config( { "Group=Time Time",
-				  "TimeMon=Time",
-				  "Group=Date Date",
-				  "DateMon=Date" } )
+		Config( { "Group=TimeGrp Time",
+				  "TimeMon=TimeMon",
+				  "Group=DateGrp Date",
+				  "DateMon=DateMon" } )
 {
 	// add command line options
 	//		log level
@@ -224,7 +224,9 @@ void MyDAMon::on_activate()
 	// create a vbox to hold all the monitors
 	auto	Box			=	Gtk::manage( new Gtk::VBox );
 
-	// init the current group to nothing
+	// init the current group
+	//		use the Monitor::Create function to get
+	//		the correct data type
 	auto	CurrGroup	=	rpahu::dockapps::Monitor::Create( "", "" );
 
 	// run through the config
@@ -239,9 +241,13 @@ void MyDAMon::on_activate()
 		// check for a new group
 		if ( "Group" == Type )
 		{
+			// save the current group to the monitor list
+			//		if there is one
+			if ( nullptr != CurrGroup )
+				MonitorList.push_back( { std::move( CurrGroup ), nullptr, nullptr } );
+
 			// create a new group
-			//		let the parent manage memory (gtk::manage)
-			CurrGroup	=	Gtk::manage( rpahu::dockapps::Monitor::Create( Type, InitString ));
+			CurrGroup	=	rpahu::dockapps::Monitor::Create( Type, InitString );
 
 			// add it to the window
 			Box->add( *CurrGroup );
@@ -262,7 +268,6 @@ void MyDAMon::on_activate()
 		}
 
 		// create a new monitor
-		//		let the parent manage memory (gtk::manage)
 		auto	CurrMonitor	=	rpahu::dockapps::Monitor::Create( Type, InitString );
 
 		// see if it is a valid monitor
@@ -274,12 +279,28 @@ void MyDAMon::on_activate()
 			LogErrors( { "Type (" + Type + ") is an invalid monitor" } );
 			continue;
 		}
-		else
-		{
-			// add it to the group
-			CurrGroup->add( *CurrMonitor );
-		}
+
+		// add it to the group
+		CurrGroup->add( *CurrMonitor );
+
+		// create the dispatcher
+		//		to handle updates to the
+		//		monitor
+		std::shared_ptr<Glib::Dispatcher>	Dispatcher	=	std::make_shared<Glib::Dispatcher>();
+		Dispatcher->connect( sigc::mem_fun( CurrMonitor.get(), &rpahu::dockapps::Monitor::Update ));
+
+		// start running the monitor processing thread
+		std::unique_ptr<std::thread>	Process	=	std::make_unique<std::thread>( &rpahu::dockapps::Monitor::Run, CurrMonitor.get(), Dispatcher );
+
+		// add it to the monitor list
+		MonitorList.push_back( { std::move ( CurrMonitor ), Dispatcher, std::move( Process ) } );
 	}
+
+	// save the last group to the monitor list
+	//		if there is one
+	//		the last group won't be added yet
+	if ( nullptr != CurrGroup )
+		MonitorList.push_back( { std::move( CurrGroup ), nullptr, nullptr } );
 
 	// update the window
 	MainWindow.add( *Box );

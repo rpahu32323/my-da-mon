@@ -32,6 +32,15 @@ class Group : public Monitor
 
 		// main constructor
 		Group( const std::string& Name, const std::string& Parameters );
+
+	// public methods
+	public:
+
+		// need a run method since
+		//		it inherits from Monitor.
+		//		this should never be called
+		void	Run( std::shared_ptr<Glib::Dispatcher> Dispatcher ) override { return; };
+
 };
 
 } /* namespace dockapps */

@@ -23,6 +23,12 @@ namespace dockapps {
 // class definition
 class Monitor : public Gtk::VBox, public rpahu::utils::Base
 {
+	// protected data members
+	protected:
+
+		// update mutex
+		std::mutex		UpdateMutex;
+
     // constructors and destructors
 	public:
 
@@ -33,7 +39,13 @@ class Monitor : public Gtk::VBox, public rpahu::utils::Base
 	public:
 
 		// create monitors
-		static Monitor*		Create( const std::string& Name, const std::string& Parameters );
+		static std::unique_ptr<rpahu::dockapps::Monitor>	Create( const std::string& Name, const std::string& Parameters );
+
+		// run the monitor
+		virtual void	Run( std::shared_ptr<Glib::Dispatcher> Dispatcher ) = 0;
+
+		// update the monitor display
+		void	Update();
 };
 
 } /* namespace dockapps */

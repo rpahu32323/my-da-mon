@@ -21,25 +21,11 @@ namespace dockapps {
 class Widget : public Gtk::DrawingArea
 {
 
-	// data members
-	protected:
-
-		// redraw flag
-		bool    Redraw;
-
-
 	// constructors and destructors
 	public:
 
 		// main constructor
 		Widget( const std::string& Class );
-
-	// public methods
-	public:
-
-		// update the widget
-		void	Update();
-
 };
 
 } /* namespace dockapp */

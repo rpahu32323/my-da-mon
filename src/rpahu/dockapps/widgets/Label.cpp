@@ -14,7 +14,10 @@ namespace dockapps {
 
 // constructor
 Label::Label()
-	:	Widget( "Label" )
+	:	Widget( "Label" ),
+		LeftMarkup( "" ),
+		CenterMarkup( "" ),
+		RightMarkup( "" )
 {
 
 }
@@ -24,11 +27,9 @@ void Label::SetLeftMarkup( std::string Markup )
 {
     // check for a change
     if ( Markup != LeftMarkup )
-    {
         // save it
         LeftMarkup  = 	Markup;
-        Redraw      =   true;
-    }
+
     // return finished
     return;
 }
@@ -38,11 +39,9 @@ void Label::SetCenterMarkup( std::string Markup )
 {
 	// check for a change
 	if ( Markup != CenterMarkup )
-	{
-		// save it
+        // save it
 		CenterMarkup    = 	Markup;
-		Redraw          =   true;
-	}
+
 	// return finished
 	return;
 }
@@ -52,11 +51,10 @@ void Label::SetRightMarkup( std::string Markup )
 {
     // check for a change
     if ( Markup != RightMarkup )
-    {
         // save it
         RightMarkup     = 	Markup;
-        Redraw      	=   true;
-    }
+
+
     // return finished
     return;
 }
@@ -118,8 +116,6 @@ bool Label::on_draw( const Cairo::RefPtr<Cairo::Context> &Context )
 		// update the size request with the new height
 		this->set_size_request( RequestWidth, NewHeight );
 	}
-
-
 
     // return successful
     return( true );

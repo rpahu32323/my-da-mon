@@ -12,9 +12,13 @@
 
 // application includes
 #include "../../utils/Base.h"
+#include "../monitors/Monitor.h"
 
 // gtkmm include
 #include <gtkmm.h>
+
+// c++ library includes
+#include <thread>
 
 // put into the rpahu::dockapps namespace
 namespace rpahu {
@@ -23,6 +27,18 @@ namespace dockapps {
 // class definition
 class MyDAMon : public Gtk::Application, public rpahu::utils::Base
 {
+
+	// monitor lists
+	private:
+
+		// items for the monitor list
+		typedef struct
+		{
+			std::unique_ptr<rpahu::dockapps::Monitor>	Monitor;
+			std::shared_ptr<Glib::Dispatcher>			Dispatcher;
+			std::unique_ptr<std::thread>				Process;
+		} MonitorItem;
+
 	// data members
 	private:
 
@@ -31,10 +47,13 @@ class MyDAMon : public Gtk::Application, public rpahu::utils::Base
 		std::string		CSSFileName;
 
 		// configureation
-		std::list<std::string>		Config;
+		std::list<std::string>				Config;
 
 		// application main window
-		Gtk::ApplicationWindow		MainWindow;
+		Gtk::ApplicationWindow				MainWindow;
+
+		// list of monitors
+		std::list<MyDAMon::MonitorItem>		MonitorList;
 
 	// constructors and destructors
 	public:
